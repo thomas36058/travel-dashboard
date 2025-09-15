@@ -1,18 +1,32 @@
-interface NavbarProps {
-  setPage: React.Dispatch<React.SetStateAction<string>>
-}
+import { Link, useLocation } from "react-router-dom";
 
-function Navbar({ setPage }: NavbarProps) {
+function Navbar() {
+  const location = useLocation();
+
   return (
     <header className="bg-gray-100 border-b flex px-6 gap-4 py-4">
-      <button onClick={() => setPage("dashboard")}>
+      <Link
+        to="/dashboard"
+        className={`px-3 py-1 rounded transition-colors ${
+          location.pathname === "/" || location.pathname === "/dashboard"
+            ? "bg-blue-500 text-white"
+            : "hover:bg-gray-200"
+        }`}
+      >
         Dashboard
-      </button>
-      <button onClick={() => setPage("calendar")}>
+      </Link>
+      <Link
+        to="/calendar"
+        className={`px-3 py-1 rounded transition-colors ${
+          location.pathname === "/calendar"
+            ? "bg-blue-500 text-white"
+            : "hover:bg-gray-200"
+        }`}
+      >
         Calendário
-      </button>
+      </Link>
     </header>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

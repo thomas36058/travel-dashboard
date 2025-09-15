@@ -1,4 +1,9 @@
-const travelData = {
+export interface TravelMonth {
+  month: string;
+  countries: string[];
+}
+
+export const travelData: Record<string, string[]> = {
   janeiro: ["Tailândia", "África do Sul", "México"],
   fevereiro: ["Brasil", "Argentina", "Espanha"],
   março: ["Japão", "Marrocos", "Portugal"],
@@ -12,5 +17,3 @@ const travelData = {
   novembro: ["Marrocos", "Egito", "Vietnã"],
   dezembro: ["Suíça", "Finlândia", "África do Sul"],
 };
-
-export default travelData;
