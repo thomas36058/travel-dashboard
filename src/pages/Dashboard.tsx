@@ -1,9 +1,11 @@
+import CardWishlist from "@/components/CardWishlist";
+
 function Dashboard() {
   return (
     <div>
-      <h2>Dashboard</h2>
+      <CardWishlist />
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;
