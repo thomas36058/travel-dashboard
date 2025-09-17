@@ -1,57 +1,96 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { Month } from "../components/FormCalendar";
-import FormCalendar from "../components/FormCalendar";
 import { travelData } from "../data/travelData";
 
+const months = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
+function getCellColor(value: string) {
+  if (!value || value === "-") return "bg-white text-gray-800";
+
+  if (
+    value.includes("Inverno") ||
+    value.includes("Frio") ||
+    value.includes("Chuvoso")
+  )
+    return "bg-blue-100 text-blue-800";
+
+  if (value.includes("Baixa temporada")) return "bg-yellow-200 text-yellow-900";
+
+  if (value.includes("Ótimo") || value.includes("Clima confiável"))
+    return "bg-orange-200 text-orange-900";
+
+  if (value.includes("Alta temporada") || value.includes("Quente"))
+    return "bg-pink-200 text-pink-900";
+
+  if (value.includes("Natal")) return "bg-red-200 text-red-800";
+
+  if (value.includes("Atrações fechadas")) return "bg-gray-200 text-gray-800";
+
+  if (value.includes("Visitável") || value.includes("Bom"))
+    return "bg-green-200 text-green-800";
+
+  return "bg-white text-black";
+}
+
 function Calendar() {
-  const [months, setMonths] = useState<Month[]>(
-    Object.entries(travelData).map(([month, countries]) => ({
-      month,
-      countries: [...countries],
-    }))
-  );
+  const [data] = useState(travelData);
 
   return (
-    <div>
-      <FormCalendar months={months} setMonths={setMonths} />
-
-      <div className="grid grid-cols-4 gap-4">
-        {months.map((monthData, idx) => (
-          <div
-            key={idx}
-            className="rounded-2xl shadow-lg border border-slate-200 bg-transparent flex items-stretch"
-          >
-            <div className="w-full p-4 flex items-center justify-center">
-              <div className="w-full aspect-square flex flex-col items-center justify-start p-4">
-                <div className="w-full text-center">
-                  <h2 className="text-2xl font-bold capitalize">
-                    {monthData.month}
-                  </h2>
-                </div>
-
-                <div className="mt-3 w-full h-full border-2 border-dashed border-slate-100 bg-white/40 p-4 space-y-3 text-lg overflow-y-auto">
-                  {monthData.countries.length > 0 ? (
-                    monthData.countries.map((country, countryIdx) => (
-                      <Link
-                        key={countryIdx}
-                        to={`/country/${encodeURIComponent(country)}`}
-                        className="block bg-blue-100 hover:bg-blue-200 rounded px-2 py-1 text-sm transition-colors cursor-pointer"
-                      >
-                        {country}
-                      </Link>
-                    ))
-                  ) : (
-                    <p className="text-gray-400 text-sm">
-                      Nenhum local adicionado
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="overflow-x-auto">
+      <table className="min-w-full border-collapse border border-gray-300 text-sm">
+        <thead>
+          <tr>
+            <th className="border border-gray-300 p-2 bg-slate-100"></th>
+            {months.map((month) => (
+              <th
+                key={month}
+                className="border border-gray-300 p-2 text-center bg-slate-100"
+              >
+                {month}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(data).map(([country, values]) => (
+            <tr key={country}>
+              <td className="border border-gray-300 p-2 font-semibold bg-slate-50 text-blue-900">
+                <Link
+                  to={`/country/${encodeURIComponent(country)}`}
+                  className="hover:underline"
+                >
+                  {country}
+                </Link>
+              </td>
+              {months.map((month) => {
+                const value = values[month] || "-";
+                const colorClass = getCellColor(value);
+                return (
+                  <td
+                    key={month}
+                    className={`border border-gray-300 p-2 text-center ${colorClass}`}
+                  >
+                    {value}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -32,7 +32,7 @@ function CardWishlist() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg rounded-2xl">
+    <Card className="w-full mx-auto shadow-lg rounded-2xl">
       <CardHeader className="gap-1">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl font-bold flex items-center gap-2">

@@ -1,8 +1,10 @@
+import CardTravels from "@/components/CardTravels";
 import CardWishlist from "@/components/CardWishlist";
 
 function Dashboard() {
   return (
-    <div>
+    <div className="grid gap-4 grid-cols-3">
+      <CardTravels />
       <CardWishlist />
     </div>
   );

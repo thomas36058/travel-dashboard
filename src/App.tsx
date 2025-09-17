@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
-import CountryDetail from "./pages/CountryDetail";
+import TravelDetail from "./pages/TravelDetail";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/calendar" element={<Calendar />} />
-              <Route path="/country/:countryName" element={<CountryDetail />} />
+              <Route path="/travel/:id" element={<TravelDetail />} />
             </Routes>
           </main>
         </div>
