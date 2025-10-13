@@ -46,8 +46,6 @@ function NewTravel() {
     storedTravels.push(newTravel);
     localStorage.setItem("travels", JSON.stringify(storedTravels));
 
-    console.log(newTravel);
-
     setName("");
     setInitialDate(new Date());
     setFinalDate(new Date());

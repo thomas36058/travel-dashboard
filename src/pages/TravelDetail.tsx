@@ -197,7 +197,7 @@ function TravelPage() {
   const grandTotal = totalHotels + totalTransports + totalExpenses + totalTours;
 
   return (
-    <div className="p-6 mx-auto space-y-6">
+    <div className="lg:p-6 mx-auto space-y-6">
       <h1 className="text-3xl font-bold mb-2">{travel.name}</h1>
       <p className="text-gray-600 mb-4">
         {travel.initialDate.toLocaleDateString()} →{" "}
@@ -206,7 +206,7 @@ function TravelPage() {
 
       <Separator />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Hospedagens</CardTitle>
@@ -344,7 +344,7 @@ function TravelPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Gastos</CardTitle>
           </CardHeader>
@@ -411,7 +411,7 @@ function TravelPage() {
               </p>
             )}
           </CardContent>
-        </Card>
+        </Card> */}
 
         <Card>
           <CardHeader>

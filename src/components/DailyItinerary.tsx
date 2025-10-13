@@ -245,7 +245,7 @@ export default function DailyItinerary({
                             </span>
                           </div>
 
-                          <div className="space-y-1 ml-6">
+                          <div className="space-y-1 lg:ml-4">
                             {periodActivities.map((activity) => (
                               <div
                                 key={activity.id}

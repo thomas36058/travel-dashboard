@@ -46,6 +46,8 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
             mode="single"
             selected={value}
             captionLayout="dropdown"
+            fromYear={2025}
+            toYear={2030}
             onSelect={(date) => {
               onChange?.(date);
               setOpen(false);
