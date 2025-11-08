@@ -32,7 +32,6 @@ export type Travel = {
   destinations: string[];
   hotels?: Hotel[];
   transports?: Transport[];
-  expenses?: Expense[];
   tours?: Tour[];
   activities?: Activity[];
 };

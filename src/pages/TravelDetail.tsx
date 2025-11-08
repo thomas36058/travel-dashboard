@@ -6,13 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import DailyItinerary from "@/components/DailyItinerary";
 
-type Expense = {
-  id: number;
-  category: string;
-  description: string;
-  amount: number;
-};
-
 type Hotel = {
   id: number;
   name: string;
@@ -40,7 +33,6 @@ type Travel = {
   destinations: string[];
   hotels?: Hotel[];
   transports?: Transport[];
-  expenses?: Expense[];
   tours?: Tour[];
 };
 
@@ -53,11 +45,6 @@ function TravelPage() {
     amount: "",
   });
   const [newTour, setNewTour] = useState({ name: "", amount: "" });
-  const [newExpense, setNewExpense] = useState({
-    category: "",
-    description: "",
-    amount: "",
-  });
 
   useEffect(() => {
     const storedTravels = JSON.parse(localStorage.getItem("travels") || "[]");
@@ -130,31 +117,6 @@ function TravelPage() {
     updateTravel({ ...travel, transports: updatedTransports });
   };
 
-  const handleAddExpense = () => {
-    if (!travel || !newExpense.category || !newExpense.amount) return;
-
-    const expense: Expense = {
-      id: Date.now(),
-      category: newExpense.category,
-      description: newExpense.description,
-      amount: Number(newExpense.amount),
-    };
-
-    const updatedExpenses = [...(travel.expenses || []), expense];
-    updateTravel({ ...travel, expenses: updatedExpenses });
-
-    setNewExpense({ category: "", description: "", amount: "" });
-  };
-
-  const handleDeleteExpense = (expenseId: number) => {
-    if (!travel) return;
-
-    const updatedExpenses = (travel.expenses || []).filter(
-      (exp) => exp.id !== expenseId
-    );
-    updateTravel({ ...travel, expenses: updatedExpenses });
-  };
-
   const handleAddTour = () => {
     if (!travel || !newTour.name || !newTour.amount) return;
 
@@ -189,12 +151,8 @@ function TravelPage() {
     (acc, t) => acc + t.amount,
     0
   );
-  const totalExpenses = (travel.expenses || []).reduce(
-    (acc, e) => acc + e.amount,
-    0
-  );
   const totalTours = (travel.tours || []).reduce((acc, t) => acc + t.amount, 0);
-  const grandTotal = totalHotels + totalTransports + totalExpenses + totalTours;
+  const grandTotal = totalHotels + totalTransports + totalTours;
 
   return (
     <div className="lg:p-6 mx-auto space-y-6">
@@ -343,75 +301,6 @@ function TravelPage() {
             )}
           </CardContent>
         </Card>
-
-        {/* <Card>
-          <CardHeader>
-            <CardTitle>Gastos</CardTitle>
-          </CardHeader>
-
-          <CardContent className="space-y-3">
-            <div className="flex flex-col md:flex-row gap-2">
-              <Input
-                placeholder="Categoria"
-                value={newExpense.category}
-                onChange={(e) =>
-                  setNewExpense({ ...newExpense, category: e.target.value })
-                }
-              />
-              <Input
-                placeholder="Descrição"
-                value={newExpense.description}
-                onChange={(e) =>
-                  setNewExpense({ ...newExpense, description: e.target.value })
-                }
-              />
-              <Input
-                type="number"
-                placeholder="Valor"
-                value={newExpense.amount}
-                onChange={(e) =>
-                  setNewExpense({ ...newExpense, amount: e.target.value })
-                }
-              />
-              <Button onClick={handleAddExpense}>Adicionar</Button>
-            </div>
-
-            {(travel.expenses || []).length > 0 ? (
-              <>
-                <ul className="divide-y">
-                  {travel.expenses!.map((exp) => (
-                    <li
-                      key={exp.id}
-                      className="py-2 flex justify-between items-center"
-                    >
-                      <span>
-                        <strong>{exp.category}</strong> - {exp.description}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <span>€ {exp.amount.toFixed(2)}</span>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteExpense(exp.id)}
-                        >
-                          Apagar
-                        </Button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-
-                <p className="text-right font-semibold">
-                  Total: € {totalExpenses.toFixed(2)}
-                </p>
-              </>
-            ) : (
-              <p className="text-sm text-gray-500">
-                Nenhum gasto registrado ainda.
-              </p>
-            )}
-          </CardContent>
-        </Card> */}
 
         <Card>
           <CardHeader>
