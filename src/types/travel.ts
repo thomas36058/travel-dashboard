@@ -27,8 +27,8 @@ export type Tour = {
 export type Travel = {
   id: number;
   name: string;
-  initialDate: Date;
-  finalDate: Date;
+  initialDate: string;
+  finalDate: string;
   destinations: string[];
   hotels?: Hotel[];
   transports?: Transport[];

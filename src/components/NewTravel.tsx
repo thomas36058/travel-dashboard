@@ -13,8 +13,13 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { TagsInput } from "./ui/input-chips";
 import { DatePicker } from "./ui/date-picker";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/store";
+import { addTravel } from "@/slices/travelsSlice";
 
 function NewTravel() {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [name, setName] = React.useState("");
   const [initialDate, setInitialDate] = React.useState<Date | undefined>(
     new Date()
@@ -37,14 +42,15 @@ function NewTravel() {
     const newTravel = {
       id: Date.now(),
       name,
-      initialDate,
-      finalDate,
+      initialDate: initialDate.toISOString(),
+      finalDate: finalDate.toISOString(),
       destinations,
+      hotels: [],
+      transports: [],
+      tours: [],
     };
 
-    const storedTravels = JSON.parse(localStorage.getItem("travels") || "[]");
-    storedTravels.push(newTravel);
-    localStorage.setItem("travels", JSON.stringify(storedTravels));
+    dispatch(addTravel(newTravel));
 
     setName("");
     setInitialDate(new Date());
@@ -96,10 +102,13 @@ function NewTravel() {
 
           <div className="grid gap-3">
             <Label htmlFor="username-1">Destinos</Label>
+
             <TagsInput
               placeholder="Digite e pressione Enter"
               value={destinations}
-              onValueChange={setDestinations}
+              onValueChange={(values) => {
+                setDestinations(values);
+              }}
             />
           </div>
         </div>
@@ -108,9 +117,12 @@ function NewTravel() {
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DialogClose>
-          <Button type="submit" onClick={addNewTravel}>
-            Criar viagem
-          </Button>
+
+          <DialogClose asChild>
+            <Button type="button" onClick={addNewTravel}>
+              Criar viagem
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

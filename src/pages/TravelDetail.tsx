@@ -1,44 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import DailyItinerary from "@/components/DailyItinerary";
-
-type Hotel = {
-  id: number;
-  name: string;
-  url: string;
-  price: number;
-};
-
-type Transport = {
-  id: number;
-  category: string;
-  amount: number;
-};
-
-type Tour = {
-  id: number;
-  name: string;
-  amount: number;
-};
-
-type Travel = {
-  id: number;
-  name: string;
-  initialDate: Date;
-  finalDate: Date;
-  destinations: string[];
-  hotels?: Hotel[];
-  transports?: Transport[];
-  tours?: Tour[];
-};
+import type { Hotel, Travel } from "@/types/travel";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store";
+import { updateTravel } from "@/slices/travelsSlice";
 
 function TravelPage() {
   const { id } = useParams();
-  const [travel, setTravel] = useState<Travel | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const travel = useSelector((state: RootState) =>
+    state.travels.find((t) => t.id === Number(id))
+  );
+
   const [newHotel, setNewHotel] = useState({ name: "", url: "", price: "" });
   const [newTransport, setNewTransport] = useState({
     category: "",
@@ -46,30 +25,22 @@ function TravelPage() {
   });
   const [newTour, setNewTour] = useState({ name: "", amount: "" });
 
-  useEffect(() => {
-    const storedTravels = JSON.parse(localStorage.getItem("travels") || "[]");
-    const foundTravel = storedTravels.find((t: Travel) => t.id === Number(id));
+  if (!travel) {
+    return <p className="text-center mt-10">Viagem não encontrada</p>;
+  }
 
-    if (foundTravel) {
-      setTravel({
-        ...foundTravel,
-        initialDate: new Date(foundTravel.initialDate),
-        finalDate: new Date(foundTravel.finalDate),
-      });
-    }
-  }, [id]);
+  const travelData = {
+    ...travel,
+    initialDate: new Date(travel.initialDate),
+    finalDate: new Date(travel.finalDate),
+  };
 
-  const updateTravel = (updated: Travel) => {
-    const storedTravels = JSON.parse(localStorage.getItem("travels") || "[]");
-    const newTravels = storedTravels.map((t: Travel) =>
-      t.id === updated.id ? updated : t
-    );
-    localStorage.setItem("travels", JSON.stringify(newTravels));
-    setTravel(updated);
+  const update = (updated: Travel) => {
+    dispatch(updateTravel(updated));
   };
 
   const handleAddHotel = () => {
-    if (!travel || !newHotel.name || !newHotel.price) return;
+    if (!newHotel.name || !newHotel.price) return;
 
     const hotel: Hotel = {
       id: Date.now(),
@@ -78,70 +49,59 @@ function TravelPage() {
       price: Number(newHotel.price),
     };
 
-    const updatedLodgings = [...(travel.hotels || []), hotel];
-    updateTravel({ ...travel, hotels: updatedLodgings });
-
+    update({ ...travel, hotels: [...(travel.hotels || []), hotel] });
     setNewHotel({ name: "", url: "", price: "" });
   };
 
   const handleDeleteHotel = (hotelId: number) => {
-    if (!travel) return;
-
-    const updatedLodgings = (travel.hotels || []).filter(
-      (hotel) => hotel.id !== hotelId
-    );
-    updateTravel({ ...travel, hotels: updatedLodgings });
+    update({
+      ...travel,
+      hotels: (travel.hotels || []).filter((h) => h.id !== hotelId),
+    });
   };
 
   const handleAddTransport = () => {
-    if (!travel || !newTransport.category || !newTransport.amount) return;
+    if (!newTransport.category || !newTransport.amount) return;
 
-    const transport: Transport = {
+    const transport = {
       id: Date.now(),
       category: newTransport.category,
       amount: Number(newTransport.amount),
     };
 
-    const updatedTransports = [...(travel.transports || []), transport];
-    updateTravel({ ...travel, transports: updatedTransports });
-
+    update({
+      ...travel,
+      transports: [...(travel.transports || []), transport],
+    });
     setNewTransport({ category: "", amount: "" });
   };
 
   const handleDeleteTransport = (transportId: number) => {
-    if (!travel) return;
-
-    const updatedTransports = (travel.transports || []).filter(
-      (t) => t.id !== transportId
-    );
-    updateTravel({ ...travel, transports: updatedTransports });
+    update({
+      ...travel,
+      transports: (travel.transports || []).filter((t) => t.id !== transportId),
+    });
   };
 
   const handleAddTour = () => {
-    if (!travel || !newTour.name || !newTour.amount) return;
+    if (!newTour.name || !newTour.amount) return;
 
-    const tour: Tour = {
+    const tour = {
       id: Date.now(),
       name: newTour.name,
       amount: Number(newTour.amount),
     };
 
-    const updatedTours = [...(travel.tours || []), tour];
-    updateTravel({ ...travel, tours: updatedTours });
-
+    update({ ...travel, tours: [...(travel.tours || []), tour] });
     setNewTour({ name: "", amount: "" });
   };
 
   const handleDeleteTour = (tourId: number) => {
-    if (!travel) return;
-
-    const updatedTours = (travel.tours || []).filter((t) => t.id !== tourId);
-    updateTravel({ ...travel, tours: updatedTours });
+    update({
+      ...travel,
+      tours: (travel.tours || []).filter((t) => t.id !== tourId),
+    });
   };
-
-  if (!travel) {
-    return <p className="text-center mt-10">Viagem não encontrada</p>;
-  }
 
   const totalHotels = (travel.hotels || []).reduce(
     (acc, h) => acc + h.price,
@@ -158,8 +118,8 @@ function TravelPage() {
     <div className="lg:p-6 mx-auto space-y-6">
       <h1 className="text-3xl font-bold mb-2">{travel.name}</h1>
       <p className="text-gray-600 mb-4">
-        {travel.initialDate.toLocaleDateString()} →{" "}
-        {travel.finalDate.toLocaleDateString()}
+        {travelData.initialDate.toLocaleDateString()} →{" "}
+        {travelData.finalDate.toLocaleDateString()}
       </p>
 
       <Separator />

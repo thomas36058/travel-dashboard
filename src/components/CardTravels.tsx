@@ -1,39 +1,21 @@
-import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import NewTravel from "./NewTravel";
-
-type Travel = {
-  id: number;
-  name: string;
-  initialDate: Date;
-  finalDate: Date;
-  destinations: string[];
-};
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store";
+import { deleteTravel } from "@/slices/travelsSlice";
 
 function CardTravels() {
-  const [travels, setTravels] = useState<Travel[]>([]);
-
-  useEffect(() => {
-    const storedTravels = JSON.parse(localStorage.getItem("travels") || "[]");
-
-    const parsedTravels = storedTravels.map((t: Travel) => ({
-      ...t,
-      initialDate: new Date(t.initialDate),
-      finalDate: new Date(t.finalDate),
-    }));
-    setTravels(parsedTravels);
-  }, []);
+  const travels = useSelector((state: RootState) => state.travels);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleDeleteTravel = (id: number) => {
-    if (!confirm("Tem certeza que deseja apagar esta viagem?")) return;
-
-    const updatedTravels = travels.filter((t) => t.id !== id);
-    setTravels(updatedTravels);
-    localStorage.setItem("travels", JSON.stringify(updatedTravels));
+    if (confirm("Tem certeza que deseja apagar esta viagem?")) {
+      dispatch(deleteTravel(id));
+    }
   };
 
   return (
@@ -69,8 +51,8 @@ function CardTravels() {
                   >
                     <h3 className="font-semibold truncate">{travel.name}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {travel.initialDate.toLocaleDateString()} →{" "}
-                      {travel.finalDate.toLocaleDateString()}
+                      {new Date(travel.initialDate).toLocaleDateString()}→{" "}
+                      {new Date(travel.finalDate).toLocaleDateString()}
                     </p>
                     <p className="text-sm truncate">
                       Destinos:{" "}
