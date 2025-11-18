@@ -16,6 +16,8 @@ import { DatePicker } from "./ui/date-picker";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store";
 import { addTravel } from "@/slices/travelsSlice";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
 function NewTravel() {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,7 +31,7 @@ function NewTravel() {
   );
   const [destinations, setDestinations] = React.useState<string[]>([]);
 
-  const addNewTravel = () => {
+  const addNewTravel = async () => {
     if (
       !name ||
       !initialDate ||
@@ -39,8 +41,7 @@ function NewTravel() {
     )
       return;
 
-    const newTravel = {
-      id: Date.now(),
+    const newTravelData = {
       name,
       initialDate: initialDate.toISOString(),
       finalDate: finalDate.toISOString(),
@@ -48,14 +49,21 @@ function NewTravel() {
       hotels: [],
       transports: [],
       tours: [],
+      activities: [],
     };
 
-    dispatch(addTravel(newTravel));
+    try {
+      const docRef = await addDoc(collection(db, "travels"), newTravelData);
 
-    setName("");
-    setInitialDate(new Date());
-    setFinalDate(new Date());
-    setDestinations([]);
+      dispatch(addTravel({ id: docRef.id, ...newTravelData }));
+
+      setName("");
+      setInitialDate(new Date());
+      setFinalDate(new Date());
+      setDestinations([]);
+    } catch (error) {
+      console.error("Erro ao adicionar viagem:", error);
+    }
   };
 
   return (
@@ -118,11 +126,9 @@ function NewTravel() {
             <Button variant="outline">Cancelar</Button>
           </DialogClose>
 
-          <DialogClose asChild>
-            <Button type="button" onClick={addNewTravel}>
-              Criar viagem
-            </Button>
-          </DialogClose>
+          <Button type="button" onClick={addNewTravel}>
+            Criar viagem
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -6,17 +6,22 @@ import { Link } from "react-router-dom";
 import NewTravel from "./NewTravel";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store";
-import { deleteTravel } from "@/slices/travelsSlice";
+import { fetchTravels, removeTravel } from "@/slices/travelsSlice";
+import { useEffect } from "react";
 
 function CardTravels() {
   const travels = useSelector((state: RootState) => state.travels);
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleDeleteTravel = (id: number) => {
+  const handleDeleteTravel = (id: string) => {
     if (confirm("Tem certeza que deseja apagar esta viagem?")) {
-      dispatch(deleteTravel(id));
+      dispatch(removeTravel(id));
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchTravels());
+  }, [dispatch]);
 
   return (
     <Card className="w-full mx-auto shadow-lg rounded-2xl">

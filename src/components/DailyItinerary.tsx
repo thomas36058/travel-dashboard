@@ -36,7 +36,7 @@ export default function DailyItinerary({
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedPeriod, setSelectedPeriod] = useState<Period>("morning");
   const [newActivity, setNewActivity] = useState("");
-  const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
   const availableDates = generateDateRange(
     new Date(travel.initialDate),
@@ -74,7 +74,7 @@ export default function DailyItinerary({
         .reduce((max, a) => Math.max(max, a.order), -1) + 1;
 
     const activity: Activity = {
-      id: Date.now(),
+      id: String(Date.now()),
       description: newActivity,
       date: selectedDate,
       period: selectedPeriod,
@@ -84,20 +84,21 @@ export default function DailyItinerary({
     const updated = [...activities, activity];
     setActivities(updated);
     setNewActivity("");
+
     onUpdate({ ...travel, activities: updated });
   };
 
-  const handleDeleteActivity = (id: number) => {
+  const handleDeleteActivity = (id: string) => {
     const updated = activities.filter((a) => a.id !== id);
     setActivities(updated);
     onUpdate({ ...travel, activities: updated });
   };
 
-  const handleDragStart = (id: number) => {
+  const handleDragStart = (id: string) => {
     setDraggedItem(id);
   };
 
-  const handleDragOver = (e: React.DragEvent, targetId: number) => {
+  const handleDragOver = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === targetId) return;
 

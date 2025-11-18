@@ -1,43 +1,41 @@
 export type Expense = {
-  id: number;
+  id: string;
   category: string;
   description: string;
   amount: number;
 };
 
 export type Hotel = {
-  id: number;
+  id: string;
   name: string;
   url: string;
   price: number;
 };
 
 export type Transport = {
-  id: number;
+  id: string;
   category: string;
   amount: number;
 };
 
 export type Tour = {
-  id: number;
+  id: string;
   name: string;
   amount: number;
 };
 
-export type Travel = {
-  id: number;
-  name: string;
-  initialDate: string;
-  finalDate: string;
-  destinations: string[];
-  hotels?: Hotel[];
-  transports?: Transport[];
-  tours?: Tour[];
-  activities?: Activity[];
-};
+export interface Activity {
+  id: string;
+  description: string;
+  date: string;
+  period: Period;
+  order: number;
+}
+
+export type Period = "morning" | "afternoon" | "night";
 
 type DayActivity = {
-  id: number;
+  id: string;
   description: string;
 };
 
@@ -51,12 +49,14 @@ export interface DailyItineraryProps {
   onUpdate: (updated: Travel) => void;
 }
 
-export type Period = "morning" | "afternoon" | "night";
-
-export interface Activity {
-  id: number;
-  description: string;
-  date: string;
-  period: Period;
-  order: number;
-}
+export type Travel = {
+  id: string;
+  name: string;
+  initialDate: string;
+  finalDate: string;
+  destinations: string[];
+  hotels: Hotel[];
+  transports: Transport[];
+  tours: Tour[];
+  activities: Activity[];
+};

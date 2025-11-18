@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,17 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import DailyItinerary from "@/components/DailyItinerary";
 import type { Hotel, Travel } from "@/types/travel";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/store";
-import { updateTravel } from "@/slices/travelsSlice";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
 function TravelPage() {
-  const { id } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const travel = useSelector((state: RootState) =>
-    state.travels.find((t) => t.id === Number(id))
-  );
+  const { id } = useParams<{ id: string }>();
+  const [travel, setTravel] = useState<Travel | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [newHotel, setNewHotel] = useState({ name: "", url: "", price: "" });
   const [newTransport, setNewTransport] = useState({
@@ -25,9 +21,33 @@ function TravelPage() {
   });
   const [newTour, setNewTour] = useState({ name: "", amount: "" });
 
-  if (!travel) {
+  useEffect(() => {
+    const fetchTravel = async () => {
+      if (!id) return;
+
+      try {
+        const docRef = doc(db, "travels", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Omit<Travel, "id">;
+          setTravel({ id: docSnap.id, ...data });
+        } else {
+          setTravel(null);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar viagem:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTravel();
+  }, [id]);
+
+  if (loading) return <p>Carregando...</p>;
+  if (!travel)
     return <p className="text-center mt-10">Viagem não encontrada</p>;
-  }
 
   const travelData = {
     ...travel,
@@ -35,72 +55,138 @@ function TravelPage() {
     finalDate: new Date(travel.finalDate),
   };
 
-  const update = (updated: Travel) => {
-    dispatch(updateTravel(updated));
-  };
-
-  const handleAddHotel = () => {
+  const handleAddHotel = async () => {
     if (!newHotel.name || !newHotel.price) return;
 
     const hotel: Hotel = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: newHotel.name,
       url: newHotel.url,
       price: Number(newHotel.price),
     };
 
-    update({ ...travel, hotels: [...(travel.hotels || []), hotel] });
-    setNewHotel({ name: "", url: "", price: "" });
+    if (!travel) return;
+
+    const updated = {
+      ...travel,
+      hotels: [...(travel.hotels || []), hotel],
+    };
+    setTravel(updated);
+
+    try {
+      const travelRef = doc(db, "travels", travel.id);
+      await updateDoc(travelRef, {
+        hotels: updated.hotels,
+      });
+
+      setNewHotel({ name: "", url: "", price: "" });
+    } catch (error) {
+      console.error("Erro ao adicionar hotel:", error);
+    }
   };
 
-  const handleDeleteHotel = (hotelId: number) => {
-    update({
+  const handleDeleteHotel = async (hotelId: string) => {
+    if (!travel) return;
+
+    const updated = {
       ...travel,
       hotels: (travel.hotels || []).filter((h) => h.id !== hotelId),
-    });
+    };
+
+    setTravel(updated);
+
+    try {
+      const travelRef = doc(db, "travels", travel.id);
+      await updateDoc(travelRef, { hotels: updated.hotels });
+    } catch (error) {
+      console.error("Erro ao apagar hotel:", error);
+    }
   };
 
-  const handleAddTransport = () => {
+  const handleAddTransport = async () => {
     if (!newTransport.category || !newTransport.amount) return;
 
     const transport = {
-      id: Date.now(),
+      id: String(Date.now()),
       category: newTransport.category,
       amount: Number(newTransport.amount),
     };
 
-    update({
+    const updated = {
       ...travel,
       transports: [...(travel.transports || []), transport],
-    });
-    setNewTransport({ category: "", amount: "" });
+    };
+    setTravel(updated);
+
+    try {
+      const travelRef = doc(db, "travels", travel.id);
+      await updateDoc(travelRef, {
+        transports: updated.transports,
+      });
+
+      setNewTransport({ category: "", amount: "" });
+    } catch (error) {
+      console.error("Erro ao adicionar transporte:", error);
+    }
   };
 
-  const handleDeleteTransport = (transportId: number) => {
-    update({
+  const handleDeleteTransport = async (transportId: string) => {
+    const updated = {
       ...travel,
-      transports: (travel.transports || []).filter((t) => t.id !== transportId),
-    });
+      transports: travel.transports.filter((h) => h.id !== transportId),
+    };
+
+    setTravel(updated);
+
+    try {
+      const travelRef = doc(db, "travels", travel.id);
+      await updateDoc(travelRef, { hotels: updated.transports });
+    } catch (error) {
+      console.error("Erro ao apagar hotel:", error);
+    }
   };
 
-  const handleAddTour = () => {
+  const handleAddTour = async () => {
     if (!newTour.name || !newTour.amount) return;
 
     const tour = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: newTour.name,
       amount: Number(newTour.amount),
     };
 
-    update({ ...travel, tours: [...(travel.tours || []), tour] });
-    setNewTour({ name: "", amount: "" });
+    const updated = {
+      ...travel,
+      tours: [...(travel.tours || []), tour],
+    };
+    setTravel(updated);
+
+    try {
+      const travelRef = doc(db, "travels", travel.id);
+      await updateDoc(travelRef, {
+        tours: updated.tours,
+      });
+
+      setNewTour({ name: "", amount: "" });
+    } catch (error) {
+      console.error("Erro ao adicionar tour:", error);
+    }
   };
 
-  const handleDeleteTour = (tourId: number) => {
-    update({
+  const handleDeleteTour = async (tourId: string) => {
+    const updated = {
       ...travel,
-      tours: (travel.tours || []).filter((t) => t.id !== tourId),
-    });
+      tours: travel.tours.filter((h) => h.id !== tourId),
+    };
+
+    setTravel(updated);
+
+    try {
+      const travelRef = doc(db, "travels", travel.id);
+      await updateDoc(travelRef, { hotels: updated.tours });
+    } catch (error) {
+      console.error("Erro ao apagar hotel:", error);
+    }
   };
 
   const totalHotels = (travel.hotels || []).reduce(
@@ -335,7 +421,15 @@ function TravelPage() {
         </CardContent>
       </Card>
 
-      <DailyItinerary travel={travel} onUpdate={updateTravel} />
+      <DailyItinerary
+        travel={travel}
+        onUpdate={async (updatedTravel) => {
+          setTravel(updatedTravel);
+          await updateDoc(doc(db, "travels", travel.id), {
+            activities: updatedTravel.activities,
+          });
+        }}
+      />
     </div>
   );
 }
