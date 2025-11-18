@@ -53,9 +53,7 @@ function NewTravel() {
     };
 
     try {
-      console.log("Enviando para Firestore:", newTravelData);
       const docRef = await addDoc(collection(db, "travels"), newTravelData);
-      console.log("Viagem criada com ID:", docRef.id);
 
       dispatch(addTravel({ id: docRef.id, ...newTravelData }));
 
