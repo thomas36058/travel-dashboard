@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+
 import DailyItinerary from "@/components/DailyItinerary";
-import type { Hotel, Travel } from "@/types/travel";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/firebaseConfig";
+
+import type { Hotel, Transport, Tour } from "@/types/travel";
+import { useTravelsStore } from "@/stores/travels.store";
 
 function TravelPage() {
   const { id } = useParams<{ id: string }>();
-  const [travel, setTravel] = useState<Travel | null>(null);
+
+  const travel = useTravelsStore((store) =>
+    store.travels.find((travel) => travel.id === id)
+  );
+  const updateTravel = useTravelsStore((store) => store.updateTravel);
+
   const [loading, setLoading] = useState(true);
 
   const [newHotel, setNewHotel] = useState({ name: "", url: "", price: "" });
@@ -22,28 +29,8 @@ function TravelPage() {
   const [newTour, setNewTour] = useState({ name: "", amount: "" });
 
   useEffect(() => {
-    const fetchTravel = async () => {
-      if (!id) return;
-
-      try {
-        const docRef = doc(db, "travels", id);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data() as Omit<Travel, "id">;
-          setTravel({ id: docSnap.id, ...data });
-        } else {
-          setTravel(null);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar viagem:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTravel();
-  }, [id]);
+    setTimeout(() => setLoading(false), 250);
+  }, []);
 
   if (loading) return <p>Carregando...</p>;
   if (!travel)
@@ -55,7 +42,7 @@ function TravelPage() {
     finalDate: new Date(travel.finalDate),
   };
 
-  const handleAddHotel = async () => {
+  const handleAddHotel = () => {
     if (!newHotel.name || !newHotel.price) return;
 
     const hotel: Hotel = {
@@ -65,139 +52,83 @@ function TravelPage() {
       price: Number(newHotel.price),
     };
 
-    if (!travel) return;
-
-    const updated = {
+    updateTravel({
       ...travel,
       hotels: [...(travel.hotels || []), hotel],
-    };
-    setTravel(updated);
+    });
 
-    try {
-      const travelRef = doc(db, "travels", travel.id);
-      await updateDoc(travelRef, {
-        hotels: updated.hotels,
-      });
-
-      setNewHotel({ name: "", url: "", price: "" });
-    } catch (error) {
-      console.error("Erro ao adicionar hotel:", error);
-    }
+    setNewHotel({ name: "", url: "", price: "" });
   };
 
-  const handleDeleteHotel = async (hotelId: string) => {
-    if (!travel) return;
-
-    const updated = {
+  const handleDeleteHotel = (hotelId: string) => {
+    updateTravel({
       ...travel,
-      hotels: (travel.hotels || []).filter((h) => h.id !== hotelId),
-    };
-
-    setTravel(updated);
-
-    try {
-      const travelRef = doc(db, "travels", travel.id);
-      await updateDoc(travelRef, { hotels: updated.hotels });
-    } catch (error) {
-      console.error("Erro ao apagar hotel:", error);
-    }
+      hotels: (travel.hotels || []).filter((hotel) => hotel.id !== hotelId),
+    });
   };
 
-  const handleAddTransport = async () => {
+  const handleAddTransport = () => {
     if (!newTransport.category || !newTransport.amount) return;
 
-    const transport = {
+    const transport: Transport = {
       id: String(Date.now()),
       category: newTransport.category,
       amount: Number(newTransport.amount),
     };
 
-    const updated = {
+    updateTravel({
       ...travel,
       transports: [...(travel.transports || []), transport],
-    };
-    setTravel(updated);
+    });
 
-    try {
-      const travelRef = doc(db, "travels", travel.id);
-      await updateDoc(travelRef, {
-        transports: updated.transports,
-      });
-
-      setNewTransport({ category: "", amount: "" });
-    } catch (error) {
-      console.error("Erro ao adicionar transporte:", error);
-    }
+    setNewTransport({ category: "", amount: "" });
   };
 
-  const handleDeleteTransport = async (transportId: string) => {
-    const updated = {
+  const handleDeleteTransport = (transportId: string) => {
+    updateTravel({
       ...travel,
-      transports: travel.transports.filter((h) => h.id !== transportId),
-    };
-
-    setTravel(updated);
-
-    try {
-      const travelRef = doc(db, "travels", travel.id);
-      await updateDoc(travelRef, { hotels: updated.transports });
-    } catch (error) {
-      console.error("Erro ao apagar hotel:", error);
-    }
+      transports: travel.transports.filter(
+        (transport) => transport.id !== transportId
+      ),
+    });
   };
 
-  const handleAddTour = async () => {
+  const handleAddTour = () => {
     if (!newTour.name || !newTour.amount) return;
 
-    const tour = {
+    const tour: Tour = {
       id: String(Date.now()),
       name: newTour.name,
       amount: Number(newTour.amount),
     };
 
-    const updated = {
+    updateTravel({
       ...travel,
       tours: [...(travel.tours || []), tour],
-    };
-    setTravel(updated);
+    });
 
-    try {
-      const travelRef = doc(db, "travels", travel.id);
-      await updateDoc(travelRef, {
-        tours: updated.tours,
-      });
-
-      setNewTour({ name: "", amount: "" });
-    } catch (error) {
-      console.error("Erro ao adicionar tour:", error);
-    }
+    setNewTour({ name: "", amount: "" });
   };
 
-  const handleDeleteTour = async (tourId: string) => {
-    const updated = {
+  const handleDeleteTour = (tourId: string) => {
+    updateTravel({
       ...travel,
-      tours: travel.tours.filter((h) => h.id !== tourId),
-    };
-
-    setTravel(updated);
-
-    try {
-      const travelRef = doc(db, "travels", travel.id);
-      await updateDoc(travelRef, { hotels: updated.tours });
-    } catch (error) {
-      console.error("Erro ao apagar hotel:", error);
-    }
+      tours: travel.tours.filter((tour) => tour.id !== tourId),
+    });
   };
 
   const totalHotels = (travel.hotels || []).reduce(
-    (acc, h) => acc + h.price,
+    (acc, hotel) => acc + hotel.price,
     0
   );
   const totalTransports = (travel.transports || []).reduce(
-    (acc, t) => acc + t.amount,
+    (acc, transport) => acc + transport.amount,
     0
   );
-  const totalTours = (travel.tours || []).reduce((acc, t) => acc + t.amount, 0);
+  const totalTours = (travel.tours || []).reduce(
+    (acc, tour) => acc + tour.amount,
+    0
+  );
   const grandTotal = totalHotels + totalTransports + totalTours;
 
   return (
@@ -210,6 +141,7 @@ function TravelPage() {
 
       <Separator />
 
+      {/* HOSPEDAGENS */}
       <div className="grid lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
@@ -249,7 +181,7 @@ function TravelPage() {
                   {travel.hotels!.map((hotel) => (
                     <li key={hotel.id} className="py-2 flex justify-between">
                       <div>
-                        {hotel.url && (
+                        {hotel.url ? (
                           <a
                             href={hotel.url}
                             target="_blank"
@@ -258,6 +190,8 @@ function TravelPage() {
                           >
                             {hotel.name}
                           </a>
+                        ) : (
+                          hotel.name
                         )}
                       </div>
                       <div className="flex items-center gap-3">
@@ -286,6 +220,7 @@ function TravelPage() {
           </CardContent>
         </Card>
 
+        {/* TRANSPORTE */}
         <Card>
           <CardHeader>
             <CardTitle>Transporte</CardTitle>
@@ -319,9 +254,7 @@ function TravelPage() {
                       key={t.id}
                       className="py-2 flex justify-between items-center"
                     >
-                      <span>
-                        <strong>{t.category}</strong>
-                      </span>
+                      <strong>{t.category}</strong>
                       <div className="flex items-center gap-3">
                         <span>€ {t.amount.toFixed(2)}</span>
                         <Button
@@ -348,6 +281,7 @@ function TravelPage() {
           </CardContent>
         </Card>
 
+        {/* PASSEIOS */}
         <Card>
           <CardHeader>
             <CardTitle>Passeios</CardTitle>
@@ -356,7 +290,7 @@ function TravelPage() {
           <CardContent className="space-y-3">
             <div className="flex flex-col md:flex-row gap-2">
               <Input
-                placeholder="Nome do passeio (Ex: Tour histórico, museu...)"
+                placeholder="Nome do passeio"
                 value={newTour.name}
                 onChange={(e) =>
                   setNewTour({ ...newTour, name: e.target.value })
@@ -413,7 +347,6 @@ function TravelPage() {
         <CardHeader>
           <CardTitle>Total Geral da Viagem</CardTitle>
         </CardHeader>
-
         <CardContent>
           <p className="text-2xl font-bold text-right">
             € {grandTotal.toFixed(2)}
@@ -423,11 +356,8 @@ function TravelPage() {
 
       <DailyItinerary
         travel={travel}
-        onUpdate={async (updatedTravel) => {
-          setTravel(updatedTravel);
-          await updateDoc(doc(db, "travels", travel.id), {
-            activities: updatedTravel.activities,
-          });
+        onUpdate={(updatedTravel) => {
+          updateTravel(updatedTravel);
         }}
       />
     </div>

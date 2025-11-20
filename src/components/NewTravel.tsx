@@ -13,14 +13,10 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { TagsInput } from "./ui/input-chips";
 import { DatePicker } from "./ui/date-picker";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/store";
-import { addTravel } from "@/slices/travelsSlice";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/firebaseConfig";
+import { useTravelsStore } from "@/stores/travels.store";
 
 function NewTravel() {
-  const dispatch = useDispatch<AppDispatch>();
+  const addTravel = useTravelsStore((store) => store.addTravel);
 
   const [name, setName] = React.useState("");
   const [initialDate, setInitialDate] = React.useState<Date | undefined>(
@@ -31,7 +27,7 @@ function NewTravel() {
   );
   const [destinations, setDestinations] = React.useState<string[]>([]);
 
-  const addNewTravel = async () => {
+  const addNewTravel = () => {
     if (
       !name ||
       !initialDate ||
@@ -41,7 +37,8 @@ function NewTravel() {
     )
       return;
 
-    const newTravelData = {
+    const newTravel = {
+      id: crypto.randomUUID(),
       name,
       initialDate: initialDate.toISOString(),
       finalDate: finalDate.toISOString(),
@@ -52,18 +49,12 @@ function NewTravel() {
       activities: [],
     };
 
-    try {
-      const docRef = await addDoc(collection(db, "travels"), newTravelData);
+    addTravel(newTravel);
 
-      dispatch(addTravel({ id: docRef.id, ...newTravelData }));
-
-      setName("");
-      setInitialDate(new Date());
-      setFinalDate(new Date());
-      setDestinations([]);
-    } catch (error) {
-      console.error("Erro ao adicionar viagem:", error);
-    }
+    setName("");
+    setInitialDate(new Date());
+    setFinalDate(new Date());
+    setDestinations([]);
   };
 
   return (
@@ -90,7 +81,7 @@ function NewTravel() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Data de Início</Label>
+              <Label>Data de Início</Label>
               <DatePicker
                 value={initialDate}
                 onChange={setInitialDate}
@@ -99,7 +90,7 @@ function NewTravel() {
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Data Final</Label>
+              <Label>Data Final</Label>
               <DatePicker
                 value={finalDate}
                 onChange={setFinalDate}
@@ -109,14 +100,11 @@ function NewTravel() {
           </div>
 
           <div className="grid gap-3">
-            <Label htmlFor="username-1">Destinos</Label>
-
+            <Label>Destinos</Label>
             <TagsInput
               placeholder="Digite e pressione Enter"
               value={destinations}
-              onValueChange={(values) => {
-                setDestinations(values);
-              }}
+              onValueChange={setDestinations}
             />
           </div>
         </div>

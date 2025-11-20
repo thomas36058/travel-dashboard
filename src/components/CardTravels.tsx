@@ -4,24 +4,17 @@ import { Separator } from "./ui/separator";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import NewTravel from "./NewTravel";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/store";
-import { fetchTravels, removeTravel } from "@/slices/travelsSlice";
-import { useEffect } from "react";
+import { useTravelsStore } from "@/stores/travels.store";
 
 function CardTravels() {
-  const travels = useSelector((state: RootState) => state.travels);
-  const dispatch = useDispatch<AppDispatch>();
+  const travels = useTravelsStore((state) => state.travels);
+  const removeTravel = useTravelsStore((state) => state.removeTravel);
 
   const handleDeleteTravel = (id: string) => {
     if (confirm("Tem certeza que deseja apagar esta viagem?")) {
-      dispatch(removeTravel(id));
+      removeTravel(id);
     }
   };
-
-  useEffect(() => {
-    dispatch(fetchTravels());
-  }, [dispatch]);
 
   return (
     <Card className="w-full mx-auto shadow-lg rounded-2xl">
@@ -56,7 +49,7 @@ function CardTravels() {
                   >
                     <h3 className="font-semibold truncate">{travel.name}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {new Date(travel.initialDate).toLocaleDateString()}→{" "}
+                      {new Date(travel.initialDate).toLocaleDateString()} →{" "}
                       {new Date(travel.finalDate).toLocaleDateString()}
                     </p>
                     <p className="text-sm truncate">
