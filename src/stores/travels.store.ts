@@ -19,8 +19,7 @@ export const useTravelsStore = create<TravelsState>()(
         travels: [],
 
         fetchTravels: () => {
-          const current = get().travels;
-          set({ travels: current });
+          return get().travels;
         },
 
         addTravel: (travel) =>
@@ -42,6 +41,9 @@ export const useTravelsStore = create<TravelsState>()(
       }),
       {
         name: "travels-storage",
+        partialize: (state) => ({
+          travels: state.travels,
+        }),
       }
     )
   )
