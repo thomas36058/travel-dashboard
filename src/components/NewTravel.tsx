@@ -18,6 +18,8 @@ import { useTravelsStore } from "@/stores/travels.store";
 function NewTravel() {
   const addTravel = useTravelsStore((store) => store.addTravel);
 
+  const [open, setOpen] = React.useState(false);
+
   const [name, setName] = React.useState("");
   const [initialDate, setInitialDate] = React.useState<Date | undefined>(
     new Date()
@@ -55,10 +57,12 @@ function NewTravel() {
     setInitialDate(new Date());
     setFinalDate(new Date());
     setDestinations([]);
+
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Nova Viagem</Button>
       </DialogTrigger>
