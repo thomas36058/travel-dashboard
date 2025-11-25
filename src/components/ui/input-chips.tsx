@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
+import { Button } from "./button";
 
 export interface TagsInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -14,19 +15,25 @@ const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
   ({ className, value = [], onValueChange, ...props }, ref) => {
     const [inputValue, setInputValue] = React.useState("");
 
+    const addTag = () => {
+      if (inputValue.trim() === "") return;
+
+      const formatted = inputValue
+        .trim()
+        .toLowerCase()
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+
+      if (!value.includes(formatted)) {
+        onValueChange?.([...value, formatted]);
+      }
+
+      setInputValue("");
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && inputValue.trim() !== "") {
+      if (e.key === "Enter") {
         e.preventDefault();
-
-        const formatted = inputValue
-          .trim()
-          .toLowerCase()
-          .replace(/\b\w/g, (char) => char.toUpperCase());
-
-        if (!value.includes(formatted)) {
-          onValueChange?.([...value, formatted]);
-        }
-        setInputValue("");
+        addTag();
       }
     };
 
@@ -35,26 +42,35 @@ const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
     };
 
     return (
-      <div
-        className={cn(
-          "flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 text-sm shadow-sm",
-          "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-          className
-        )}
-      >
-        {value.map((tag) => (
-          <TagItem key={tag} onRemove={() => removeTag(tag)}>
-            {tag}
-          </TagItem>
-        ))}
-        <input
-          ref={ref}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="flex-1 min-w-[80px] bg-transparent outline-none placeholder:text-muted-foreground"
-          {...props}
-        />
+      <div className="flex items-start gap-2">
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 text-sm shadow-sm flex-1",
+            "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+            className
+          )}
+        >
+          {value.map((tag) => (
+            <TagItem key={tag} onRemove={() => removeTag(tag)}>
+              {tag}
+            </TagItem>
+          ))}
+
+          <input
+            ref={ref}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1 min-w-[120px] bg-transparent outline-none placeholder:text-muted-foreground"
+            placeholder={props.placeholder ?? "Digite um destino"}
+            {...props}
+          />
+        </div>
+
+        <Button type="button" onClick={addTag} className="shrink-0">
+          <Plus className="w-4 h-4 mr-1" />
+          Adicionar
+        </Button>
       </div>
     );
   }
