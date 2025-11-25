@@ -19,11 +19,20 @@ export interface DatePickerProps
   value?: Date;
   onChange?: (date: Date | undefined) => void;
   placeholder?: string;
+  disabledBefore?: Date;
+  defaultMonth?: Date;
 }
 
 const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
   (
-    { className, value, onChange, placeholder = "Selecionar data", ...props },
+    {
+      className,
+      value,
+      onChange,
+      placeholder = "Selecionar data",
+      disabledBefore,
+      ...props
+    },
     ref
   ) => {
     const [open, setOpen] = React.useState(false);
@@ -48,10 +57,14 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
             captionLayout="dropdown"
             fromYear={2025}
             toYear={2030}
+            defaultMonth={props.defaultMonth ?? value ?? new Date()}
             onSelect={(date) => {
               onChange?.(date);
               setOpen(false);
             }}
+            disabled={(date) =>
+              disabledBefore ? date < disabledBefore : false
+            }
           />
         </PopoverContent>
       </Popover>

@@ -90,6 +90,7 @@ function NewTravel() {
                 value={initialDate}
                 onChange={setInitialDate}
                 className="w-full"
+                disabledBefore={new Date()}
               />
             </div>
 
@@ -99,6 +100,8 @@ function NewTravel() {
                 value={finalDate}
                 onChange={setFinalDate}
                 className="w-full"
+                disabledBefore={initialDate}
+                defaultMonth={initialDate}
               />
             </div>
           </div>
