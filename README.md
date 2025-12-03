@@ -5,14 +5,13 @@ A comprehensive web application for planning and managing your travels. Organize
 ## 🎯 Features
 
 - **Dashboard**: Overview of your current travels and wishlist
-- **Calendar View**: Visualize your trips on an interactive calendar
+- **Calendar View**: Best travel seasons for various countries
 - **Travel Details**: Comprehensive travel management with:
   - 📅 **Daily Itineraries**: Plan activities for morning, afternoon, and night
   - 💰 **Expense Tracking**: Categorize and monitor all travel costs
   - 🏨 **Hotels Management**: Keep track of accommodations and prices
   - 🚗 **Transport Costs**: Record transportation expenses
   - 🎫 **Tours & Activities**: Organize tours and activities for your trips
-- **Destination Information**: Best travel seasons for various countries
 
 ## 🛠 Tech Stack
 
