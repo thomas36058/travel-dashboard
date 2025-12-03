@@ -67,13 +67,8 @@ function Calendar() {
         <tbody>
           {Object.entries(data).map(([country, values]) => (
             <tr key={country}>
-              <td className="border border-gray-300 p-2 font-semibold bg-slate-50 text-blue-900">
-                <Link
-                  to={`/country/${encodeURIComponent(country)}`}
-                  className="hover:underline"
-                >
-                  {country}
-                </Link>
+              <td className="border border-gray-300 p-2 font-semibold bg-slate-50 text-gray-800">
+                {country}
               </td>
               {months.map((month) => {
                 const value = values[month] || "-";
