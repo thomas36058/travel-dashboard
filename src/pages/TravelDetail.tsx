@@ -32,9 +32,9 @@ function TravelPage() {
     setTimeout(() => setLoading(false), 250);
   }, []);
 
-  if (loading) return <p>Carregando...</p>;
+  if (loading) return <p>Loading...</p>;
   if (!travel)
-    return <p className="text-center mt-10">Viagem não encontrada</p>;
+    return <p className="text-center mt-10">Travel not found</p>;
 
   const travelData = {
     ...travel,
@@ -145,20 +145,20 @@ function TravelPage() {
       <div className="grid lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Hospedagens</CardTitle>
+            <CardTitle>Accommodations</CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4">
             <div className="flex flex-col md:flex-row gap-2">
               <Input
-                placeholder="Nome do hotel"
+                placeholder="Accommodations name"
                 value={newHotel.name}
                 onChange={(e) =>
                   setNewHotel({ ...newHotel, name: e.target.value })
                 }
               />
               <Input
-                placeholder="URL da hospedagem"
+                placeholder="Accommodations URL"
                 value={newHotel.url}
                 onChange={(e) =>
                   setNewHotel({ ...newHotel, url: e.target.value })
@@ -166,13 +166,13 @@ function TravelPage() {
               />
               <Input
                 type="number"
-                placeholder="Preço total"
+                placeholder="Total price"
                 value={newHotel.price}
                 onChange={(e) =>
                   setNewHotel({ ...newHotel, price: e.target.value })
                 }
               />
-              <Button onClick={handleAddHotel}>Adicionar</Button>
+              <Button onClick={handleAddHotel}>Add</Button>
             </div>
 
             {(travel.hotels || []).length > 0 ? (
@@ -201,7 +201,7 @@ function TravelPage() {
                           size="sm"
                           onClick={() => handleDeleteHotel(hotel.id)}
                         >
-                          Apagar
+                          Delete
                         </Button>
                       </div>
                     </li>
@@ -214,7 +214,7 @@ function TravelPage() {
               </>
             ) : (
               <p className="text-sm text-gray-500">
-                Nenhuma hospedagem adicionada ainda.
+                No accommodations added yet.
               </p>
             )}
           </CardContent>
@@ -223,13 +223,13 @@ function TravelPage() {
         {/* TRANSPORTE */}
         <Card>
           <CardHeader>
-            <CardTitle>Transporte</CardTitle>
+            <CardTitle>Transports</CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4">
             <div className="flex flex-col md:flex-row gap-2">
               <Input
-                placeholder="Categoria (carro, avião, trem...)"
+                placeholder="Category (car, airplane, train...)"
                 value={newTransport.category}
                 onChange={(e) =>
                   setNewTransport({ ...newTransport, category: e.target.value })
@@ -237,13 +237,13 @@ function TravelPage() {
               />
               <Input
                 type="number"
-                placeholder="Valor total"
+                placeholder="Total value"
                 value={newTransport.amount}
                 onChange={(e) =>
                   setNewTransport({ ...newTransport, amount: e.target.value })
                 }
               />
-              <Button onClick={handleAddTransport}>Adicionar</Button>
+              <Button onClick={handleAddTransport}>Add</Button>
             </div>
 
             {(travel.transports || []).length > 0 ? (
@@ -262,7 +262,7 @@ function TravelPage() {
                           size="sm"
                           onClick={() => handleDeleteTransport(t.id)}
                         >
-                          Apagar
+                          Delete
                         </Button>
                       </div>
                     </li>
@@ -275,7 +275,7 @@ function TravelPage() {
               </>
             ) : (
               <p className="text-sm text-gray-500">
-                Nenhum transporte adicionado ainda.
+                No transport added yet.
               </p>
             )}
           </CardContent>
@@ -284,13 +284,13 @@ function TravelPage() {
         {/* PASSEIOS */}
         <Card>
           <CardHeader>
-            <CardTitle>Passeios</CardTitle>
+            <CardTitle>Tours</CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-3">
             <div className="flex flex-col md:flex-row gap-2">
               <Input
-                placeholder="Nome do passeio"
+                placeholder="Tour name"
                 value={newTour.name}
                 onChange={(e) =>
                   setNewTour({ ...newTour, name: e.target.value })
@@ -298,13 +298,13 @@ function TravelPage() {
               />
               <Input
                 type="number"
-                placeholder="Valor"
+                placeholder="Value"
                 value={newTour.amount}
                 onChange={(e) =>
                   setNewTour({ ...newTour, amount: e.target.value })
                 }
               />
-              <Button onClick={handleAddTour}>Adicionar</Button>
+              <Button onClick={handleAddTour}>Add</Button>
             </div>
 
             {(travel.tours || []).length > 0 ? (
@@ -323,7 +323,7 @@ function TravelPage() {
                           size="sm"
                           onClick={() => handleDeleteTour(t.id)}
                         >
-                          Apagar
+                          Delete
                         </Button>
                       </div>
                     </li>
@@ -336,7 +336,7 @@ function TravelPage() {
               </>
             ) : (
               <p className="text-sm text-gray-500">
-                Nenhum passeio adicionado ainda.
+                No tour added yet.
               </p>
             )}
           </CardContent>
@@ -345,7 +345,7 @@ function TravelPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Total Geral da Viagem</CardTitle>
+          <CardTitle>Travel value</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold text-right">

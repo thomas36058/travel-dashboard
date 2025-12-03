@@ -79,11 +79,13 @@ function Navbar() {
             <div className="text-right flex gap-2 items-center">
               <p className="text-sm font-medium text-gray-900">{userName}</p>
               
-              <img
-                src={userImage || "/default-avatar.png"}
-                alt="avatar"
-                className="w-10 h-10 rounded-full"
-              />
+              {userImage && (
+                <img
+                  src={userImage || "/default-avatar.png"}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full"
+                />
+              )}
             </div>
 
             <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2">

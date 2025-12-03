@@ -1,4 +1,3 @@
-// src/stores/travels.store.ts
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import type { Travel } from "@/types/travel";

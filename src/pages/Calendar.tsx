@@ -3,43 +3,43 @@ import { Link } from "react-router-dom";
 import { travelData } from "../data/travelData";
 
 const months = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function getCellColor(value: string) {
   if (!value || value === "-") return "bg-white text-gray-800";
 
   if (
-    value.includes("Inverno") ||
-    value.includes("Frio") ||
-    value.includes("Chuvoso")
+    value.includes("Winter") ||
+    value.includes("Cold") ||
+    value.includes("Rainy")
   )
     return "bg-blue-100 text-blue-800";
 
-  if (value.includes("Baixa temporada")) return "bg-yellow-200 text-yellow-900";
+  if (value.includes("Low season")) return "bg-yellow-200 text-yellow-900";
 
-  if (value.includes("Ótimo") || value.includes("Clima confiável"))
+  if (value.includes("Great") || value.includes("Reliable weather"))
     return "bg-orange-200 text-orange-900";
 
-  if (value.includes("Alta temporada") || value.includes("Quente"))
+  if (value.includes("High season") || value.includes("Hot"))
     return "bg-pink-200 text-pink-900";
 
-  if (value.includes("Natal")) return "bg-red-200 text-red-800";
+  if (value.includes("Christmas")) return "bg-red-200 text-red-800";
 
-  if (value.includes("Atrações fechadas")) return "bg-gray-200 text-gray-800";
+  if (value.includes("Closed attractions")) return "bg-gray-200 text-gray-800";
 
-  if (value.includes("Visitável") || value.includes("Bom"))
+  if (value.includes("Visitable") || value.includes("Good"))
     return "bg-green-200 text-green-800";
 
   return "bg-white text-black";
