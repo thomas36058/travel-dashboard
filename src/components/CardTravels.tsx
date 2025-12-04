@@ -11,7 +11,7 @@ function CardTravels() {
   const removeTravel = useTravelsStore((state) => state.removeTravel);
 
   const handleDeleteTravel = (id: string) => {
-    if (confirm("Tem certeza que deseja apagar esta viagem?")) {
+    if (confirm("Are you sure you want to cancel the trip?")) {
       removeTravel(id);
     }
   };
@@ -21,7 +21,7 @@ function CardTravels() {
       <CardHeader className="gap-1">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl font-bold flex items-center gap-2">
-            Viagens
+            Travels
           </CardTitle>
 
           <NewTravel />
@@ -34,7 +34,7 @@ function CardTravels() {
         <ScrollArea className="rounded-md py-2">
           {travels.length === 0 ? (
             <p className="text-muted-foreground text-sm">
-              Nenhuma viagem cadastrada ainda.
+              No trips registered yet.
             </p>
           ) : (
             <ul className="space-y-3">
@@ -53,7 +53,7 @@ function CardTravels() {
                       {new Date(travel.finalDate).toLocaleDateString()}
                     </p>
                     <p className="text-sm truncate">
-                      Destinos:{" "}
+                      Destinations:{" "}
                       <span className="font-medium">
                         {travel.destinations.join(", ")}
                       </span>
@@ -65,7 +65,7 @@ function CardTravels() {
                     size="sm"
                     onClick={() => handleDeleteTravel(travel.id)}
                   >
-                    Apagar
+                    Delete
                   </Button>
                 </li>
               ))}

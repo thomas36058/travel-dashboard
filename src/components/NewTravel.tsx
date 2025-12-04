@@ -64,17 +64,17 @@ function NewTravel() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Nova Viagem</Button>
+        <Button variant="outline">New Travel</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Criar nova viagem</DialogTitle>
+          <DialogTitle>Create new travel</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4">
           <div className="grid gap-3">
-            <Label htmlFor="name-1">Nome da viagem</Label>
+            <Label htmlFor="name-1">Name</Label>
             <Input
               id="name-1"
               name="name"
@@ -85,7 +85,7 @@ function NewTravel() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-3">
-              <Label>Data de Início</Label>
+              <Label>Start date</Label>
               <DatePicker
                 value={initialDate}
                 onChange={setInitialDate}
@@ -95,7 +95,7 @@ function NewTravel() {
             </div>
 
             <div className="grid gap-3">
-              <Label>Data Final</Label>
+              <Label>End date</Label>
               <DatePicker
                 value={finalDate}
                 onChange={setFinalDate}
@@ -107,9 +107,9 @@ function NewTravel() {
           </div>
 
           <div className="grid gap-3">
-            <Label>Destinos</Label>
+            <Label>Destinations</Label>
             <TagsInput
-              placeholder="Digite e pressione Enter"
+              placeholder="Type and press Enter"
               value={destinations}
               onValueChange={setDestinations}
             />
@@ -118,11 +118,11 @@ function NewTravel() {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancelar</Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
 
           <Button type="button" onClick={addNewTravel}>
-            Criar viagem
+            Create travel
           </Button>
         </DialogFooter>
       </DialogContent>

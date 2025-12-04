@@ -151,14 +151,14 @@ function TravelPage() {
           <CardContent className="space-y-4">
             <div className="flex flex-col md:flex-row gap-2">
               <Input
-                placeholder="Accommodations name"
+                placeholder="Name"
                 value={newHotel.name}
                 onChange={(e) =>
                   setNewHotel({ ...newHotel, name: e.target.value })
                 }
               />
               <Input
-                placeholder="Accommodations URL"
+                placeholder="Link"
                 value={newHotel.url}
                 onChange={(e) =>
                   setNewHotel({ ...newHotel, url: e.target.value })
@@ -166,7 +166,7 @@ function TravelPage() {
               />
               <Input
                 type="number"
-                placeholder="Total price"
+                placeholder="Price"
                 value={newHotel.price}
                 onChange={(e) =>
                   setNewHotel({ ...newHotel, price: e.target.value })
@@ -237,7 +237,7 @@ function TravelPage() {
               />
               <Input
                 type="number"
-                placeholder="Total value"
+                placeholder="Price"
                 value={newTransport.amount}
                 onChange={(e) =>
                   setNewTransport({ ...newTransport, amount: e.target.value })
@@ -275,7 +275,7 @@ function TravelPage() {
               </>
             ) : (
               <p className="text-sm text-gray-500">
-                No transport added yet.
+                No transports added yet.
               </p>
             )}
           </CardContent>
@@ -290,7 +290,7 @@ function TravelPage() {
           <CardContent className="space-y-3">
             <div className="flex flex-col md:flex-row gap-2">
               <Input
-                placeholder="Tour name"
+                placeholder="Name"
                 value={newTour.name}
                 onChange={(e) =>
                   setNewTour({ ...newTour, name: e.target.value })
@@ -298,7 +298,7 @@ function TravelPage() {
               />
               <Input
                 type="number"
-                placeholder="Value"
+                placeholder="Price"
                 value={newTour.amount}
                 onChange={(e) =>
                   setNewTour({ ...newTour, amount: e.target.value })
@@ -336,7 +336,7 @@ function TravelPage() {
               </>
             ) : (
               <p className="text-sm text-gray-500">
-                No tour added yet.
+                No tours added yet.
               </p>
             )}
           </CardContent>

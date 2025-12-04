@@ -69,7 +69,7 @@ const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
 
         <Button type="button" onClick={addTag} className="shrink-0">
           <Plus className="w-4 h-4 mr-1" />
-          Adicionar
+          Add
         </Button>
       </div>
     );

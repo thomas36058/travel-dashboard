@@ -59,11 +59,11 @@ export default function DailyItinerary({
   const getPeriodLabel = (period: Period) => {
     switch (period) {
       case "morning":
-        return "Manhã";
+        return "Morning";
       case "afternoon":
-        return "Tarde";
+        return "Afternoon";
       case "night":
-        return "Noite";
+        return "Night";
     }
   };
 
@@ -159,7 +159,7 @@ export default function DailyItinerary({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>🗓️ Roteiro Diário</CardTitle>
+        <CardTitle>🗓️ Daily Itinerary</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -175,7 +175,7 @@ export default function DailyItinerary({
               <div key={date} className="border rounded-lg p-4 bg-gray-50">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="font-semibold text-base">
-                    {new Date(date + "T12:00:00").toLocaleDateString("pt-BR", {
+                    {new Date(date + "T12:00:00").toLocaleDateString("en-US", {
                       weekday: "long",
                       day: "2-digit",
                       month: "long",
@@ -196,14 +196,14 @@ export default function DailyItinerary({
                     <DialogTrigger asChild>
                       <Button size="sm" variant="outline">
                         <Plus className="w-4 h-4 mr-2" />
-                        Adicionar Atividade
+                        Add new
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Adicionar Atividade</DialogTitle>
+                        <DialogTitle>Add new activity</DialogTitle>
                         <DialogDescription>
-                          Adicione uma nova atividade para{" "}
+                          Add new activity to{" "}
                           {new Date(date + "T12:00:00").toLocaleDateString(
                             "pt-BR"
                           )}
@@ -211,7 +211,7 @@ export default function DailyItinerary({
                       </DialogHeader>
                       <div className="space-y-4 py-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Período</label>
+                          <label className="text-sm font-medium">Period</label>
                           <Select
                             value={selectedPeriod}
                             onValueChange={(v) =>
@@ -222,18 +222,18 @@ export default function DailyItinerary({
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="morning">Manhã</SelectItem>
-                              <SelectItem value="afternoon">Tarde</SelectItem>
-                              <SelectItem value="night">Noite</SelectItem>
+                              <SelectItem value="morning">Morning</SelectItem>
+                              <SelectItem value="afternoon">Afternoon</SelectItem>
+                              <SelectItem value="night">Night</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium">
-                            Atividade
+                            Activity
                           </label>
                           <Input
-                            placeholder="Descrição da atividade"
+                            placeholder="Description"
                             value={newActivity}
                             onChange={(e) => setNewActivity(e.target.value)}
                             onKeyDown={(e) =>
@@ -243,7 +243,7 @@ export default function DailyItinerary({
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button onClick={handleAddActivity}>Adicionar</Button>
+                        <Button onClick={handleAddActivity}>Add</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
@@ -304,7 +304,7 @@ export default function DailyItinerary({
 
                               {periodActivities.length === 0 && (
                                 <div className="text-center py-8 text-slate-400">
-                                  <p className="text-xs">Nenhuma atividade</p>
+                                  <p className="text-xs">No activity</p>
                                 </div>
                               )}
                             </CardContent>
